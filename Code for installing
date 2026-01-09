@@ -1,0 +1,35 @@
+#Install mysql and apache
+sudo yum update -y
+sudo yum install httpd php php-mysqli -y
+sudo systemctl start httpd
+sudo systemctl enable httpd
+
+#Install mariadb
+sudo yum install mariadb105 -y
+
+#Connect to rds
+mariadb -h mealdb.c8xa824ic05d.us-east-1.rds.amazonaws.com -u admin -p
+
+#Create database and table
+CREATE DATABASE meal_order;
+USE meal_order;
+
+CREATE TABLE orders (
+ id INT AUTO_INCREMENT PRIMARY KEY,
+ name VARCHAR(100),
+ meal VARCHAR(100),
+ qty INT
+);
+
+#Apply bucket policies
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::meal-images-123/*"
+    }
+  ]
+}
